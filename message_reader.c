@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
         exit(1);
     }
     ioctl_outcome = ioctl(fd,MSG_SLOT_CHANNEL,channel_id);
-    if(ioctl_outcome < 0){  //figure out ioctl behavior
+    if(ioctl_outcome == -1){  
         perror("Error ioctrl cmd for read");
         exit(1);
     }
