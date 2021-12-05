@@ -106,11 +106,10 @@ int find_channel(Msg_slot* ms, int id, Channel* c){
 // a processs which has already opened
 // the device file attempts to write to it
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
-  int minor, res, i, len;
+  int *channel_id, minor, res, i, len;
   Msg_slot *ms;
   char *msg;
   Channel *c;
-  void * channel_id;
 
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
