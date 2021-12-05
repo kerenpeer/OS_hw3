@@ -19,14 +19,14 @@
 #define DEVICE_FILE_NAME "message_slot_dev"
 #define SUCCESS 0
 
-struct channel{
+typedef struct channel{
   int id;
   char *msg;
   int msg_len;
   struct channel* next;
 } Channel;
 
-struct msg_slot{
+typedef struct msg_slot{
   int minor;
   struct channel *channels;
 } Msg_slot;
