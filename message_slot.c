@@ -18,18 +18,6 @@
 
 MODULE_LICENSE("GPL");
 
-//==================== DEVICE SETUP =============================
-// This structure will hold the functions to be called
-// when a process does something to the device we created
-struct file_operations Fops ={
-  .owner	  = THIS_MODULE, 
-  .read           = device_read,
-  .write          = device_write,
-  .open           = device_open,
-  .unlocked_ioctl = device_ioctl,
-  .release        = device_release,
-};
-
 //================== HELP FUNCTIONS ===========================
 int find_channel(Msg_slot* ms, int id, Channel* c){
   Channel* head;
@@ -234,6 +222,18 @@ static void __exit driver_cleanup(void){
   kfree(driver);
   unregister_chrdev(MAJOR_NUM, DEVICE_RANGE_NAME);
 }
+
+//==================== DEVICE SETUP =============================
+// This structure will hold the functions to be called
+// when a process does something to the device we created
+struct file_operations Fops ={
+  .owner	  = THIS_MODULE, 
+  .read           = device_read,
+  .write          = device_write,
+  .open           = device_open,
+  .unlocked_ioctl = device_ioctl,
+  .release        = device_release,
+};
 
 //---------------------------------------------------------------
 module_init(driver_init);
