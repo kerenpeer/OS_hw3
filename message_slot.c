@@ -4,7 +4,7 @@
 #include <linux/uaccess.h>  /* for get_user and put_user */
 #include <linux/string.h>   /* for memset. NOTE - not string.h!*/
 #include <linux/slab.h>
-#include <errno.h>
+#include <linux/errno.h>
 // Our custom definitions of IOCTL operations
 #include "message_slot.h"
 // Declare what kind of code we want
