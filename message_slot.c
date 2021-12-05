@@ -29,6 +29,7 @@ static int device_open(struct inode* inode, struct file* file){
   Msg_slot* ms;
 
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  memset(ms, 0, sizeof(Msg_slot));
   if (ms == NULL){
       return -EINVAL;
   }
@@ -49,10 +50,9 @@ static int device_release(struct inode* inode, struct file*  file){
 // the device file attempts to read from it
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
   int minor, res, i, len;
-  ssize_t j;
-  Msg_slot ms;
+  Msg_slot *ms;
   char *msg;
-  Channel c;
+  Channel *c;
   void* channel_id;
 
   channel_id = file -> private_data;
@@ -61,7 +61,8 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
-  c = (Channel*)kmalloc(sizeof(channel),GFP_KERNEL);
+  c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+  memset(c, 0, sizeof(Channel));
   if (c == NULL){
       return -EINVAL;
   }
@@ -117,6 +118,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
     return -EINVAL;     //validate error
   }
   c = (channel*)kmalloc(sizeof(channel),GFP_KERNEL);
+  memset(c, 0, sizeof(Channel));
   if (c == NULL){
       return -EINVAL;
   }
@@ -154,6 +156,7 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
     }
     msg_s = driver[minor];
     c = (channel*)kmalloc(sizeof(channel),GFP_KERNEL);
+    memset(c, 0, sizeof(Channel));
     if (c == NULL){
       return -EINVAL;
     }
