@@ -24,22 +24,22 @@ struct channel{
   char *msg;
   int msg_len;
   struct channel* next;
-} channel;
+} Channel;
 
 struct msg_slot{
   int minor;
   struct channel *channels;
-} msg_slot;
+} Msg_slot;
 
 struct msg_slot driver[256] = {NULL};
 
 static int device_open(struct inode* inode, struct file* file);
 static int device_release(struct inode* inode, struct file*  file);
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset);
-int find_channel(msg_slot *ms, int id, channel *c); 
+int find_channel(Msg_slot *ms, int id, Channel *c); 
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset);
 static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsigned long ioctl_param);
-void buildC(channel *c, unsigned long ioctl_param);
+void buildC(Channel *c, unsigned long ioctl_param);
 static int __init driver_init(void);
 static void __exit driver_cleanup(void);
 

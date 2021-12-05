@@ -26,9 +26,9 @@ struct file_operations Fops ={
 //================== DEVICE FUNCTIONS ===========================
 static int device_open(struct inode* inode, struct file* file){
   int minor;
-  msg_slot *ms;
+  Msg_slot* ms;
 
-  ms = (msg_slot*)kmalloc(sizeof(msg_slot),GFP_KERNEL);
+  ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   minor = iminor(inode);
   ms -> minor = minor;
   ms -> channels = NULL;
@@ -47,9 +47,9 @@ static int device_release(struct inode* inode, struct file*  file){
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
   int channel_id, minor, res, i, len;
   ssize_t j;
-  msg_slot *ms;
+  Msg_slot *ms;
   char *msg;
-  channel *c;
+  Channel *c;
 
   channel_id = file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
@@ -82,8 +82,8 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
 }
 
 //---------------------------------------------------------------
-int find_channel(msg_slot* ms, int id, channel* c){
-  channel* head;
+int find_channel(Msg_slot* ms, int id, Channel* c){
+  Channel* head;
 
   head = ms -> channels;
   while(head != NULL){
@@ -102,9 +102,9 @@ int find_channel(msg_slot* ms, int id, channel* c){
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
   int channel_id, minor, res, i, len;
   ssize_t j;
-  msg_slot *ms;
+  Msg_slot *ms;
   char *msg;
-  channel *c;
+  Channel *c;
 
   channel_id = file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
@@ -138,8 +138,8 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
 //----------------------------------------------------------------
 static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsigned long ioctl_param){
   int minor;
-  msg_slot *msg_s;
-  channel *c, *prev;
+  Msg_slot *msg_s;
+  Channel *c, *prev;
 
   // Switch according to the ioctl called
   if(MSG_SLOT_CHANNEL == ioctl_command_id && ioctl_param != 0){
@@ -173,7 +173,7 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
 }
 
 //----------------------------------------------------------------
-void buildC(channel *c, unsigned long ioctl_param){
+void buildC(Channel *c, unsigned long ioctl_param){
     c -> id = ioctl_param;
     c -> msg = NULL;
     c -> msg_len = -1;
