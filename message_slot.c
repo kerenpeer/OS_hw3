@@ -56,6 +56,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   char *msg;
   Channel *c;
 
+  len = -1;
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
