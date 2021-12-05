@@ -201,7 +201,7 @@ static int __init driver_init(void){
                        DEVICE_FILE_NAME, MAJOR_NUM );
     return rc;  //needed? 
   }
-  memset(driver,0,256*sizeof(Msg_slot));
+  memset(driver,0,256*sizeof(Msg_slot*));
   return 0;
 }
 
