@@ -13,4 +13,18 @@
 #define DEVICE_FILE_NAME "message_slot_dev"
 #define SUCCESS 0
 
+struct channel{
+  int id;
+  char *msg;
+  int msg_len;
+  channel* next;
+} channel;
+
+struct msg_slot{
+  int minor;
+  channel *channels;
+} msg_slot;
+
+static msg_slot driver[256] = {NULL};
+
 #endif
