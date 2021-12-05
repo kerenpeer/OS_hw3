@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
         exit(1);
     }
     file_path = argv[1];
-    channel_id = argv[2];
+    channel_id = atoi(argv[2]);
 
     fd = open(file_path, O_RDONLY);
     if(fd < 0){
