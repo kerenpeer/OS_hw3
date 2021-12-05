@@ -33,7 +33,6 @@ typedef struct msg_slot{
 } Msg_slot;
 
 static struct Msg_slot driver[256];
-memset(driver,0,256*sizeof(Msg_slot));
 
 static int device_open(struct inode* inode, struct file* file);
 static int device_release(struct inode* inode, struct file*  file);
