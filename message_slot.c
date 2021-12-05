@@ -66,7 +66,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(ms, (int)*channel_id, c);
+  res = find_channel(ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -105,11 +105,11 @@ int find_channel(Msg_slot* ms, int id, Channel* c){
 // a processs which has already opened
 // the device file attempts to write to it
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
-  int channel_id, minor, res, i, len;
-  ssize_t j;
+  int minor, res, i, len;
   Msg_slot *ms;
   char *msg;
   Channel *c;
+  void * channel_id;
 
   channel_id = file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
@@ -117,12 +117,12 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
-  c = (channel*)kmalloc(sizeof(channel),GFP_KERNEL);
+  c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
   memset(c, 0, sizeof(Channel));
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(ms, channel_id, c);
+  res = find_channel(ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -155,18 +155,18 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
        return -EINVAL;
     }
     msg_s = driver[minor];
-    c = (channel*)kmalloc(sizeof(channel),GFP_KERNEL);
+    c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
     memset(c, 0, sizeof(Channel));
     if (c == NULL){
       return -EINVAL;
     }
     buildC(c, ioctl_param);
     file -> private_data = (void*) ioctl_param;
-    if(msg -> channels == NULL){
-      msg -> channels = c;
+    if(msg_s -> channels == NULL){
+      msg_s -> channels = c;
     }
     else{
-      prev =  msg -> channels;
+      prev =  msg_s -> channels;
       while(prev -> next != NULL){
         prev = prev -> next;
       }
@@ -211,7 +211,14 @@ static void __exit driver_cleanup(void){
   // Unregister the device
   // Should always succeed
   int i;
-  channel Clist,tmp;
+  Channel *Clist, *tmp;
+  Clist =  = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+  memset(Clist, 0, sizeof(Channel));
+  tmp = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+  memset(tmp, 0, sizeof(Channel));
+  if (Clist == NULL || tmp == NULL){
+      return -EINVAL;
+  }
   for(i=0; i < 256; i++){
     if(driver[i] != NULL){
        Clist = driver[i]-> channels;
