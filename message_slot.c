@@ -1,3 +1,5 @@
+// Our custom definitions of IOCTL operations
+#include "message_slot.h"
 // Declare what kind of code we want
 // from the header files. Defining __KERNEL__
 // and MODULE allows us to access kernel-level
@@ -7,28 +9,7 @@
 #undef MODULE
 #define MODULE
 
-
-#include <linux/kernel.h>   /* We're doing kernel work */
-#include <linux/module.h>   /* Specifically, a module */
-#include <linux/fs.h>       /* for register_chrdev */
-#include <linux/uaccess.h>  /* for get_user and put_user */
-#include <linux/string.h>   /* for memset. NOTE - not string.h!*/
-#include <linux/init.h>
-
 MODULE_LICENSE("GPL");
-
-// Our custom definitions of IOCTL operations
-#include "message_slot.h"
-
-static int device_open(struct inode* inode, struct file* file);
-static int device_release(struct inode* inode, struct file*  file);
-static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset);
-int find_channel(msg_slot *ms, int id, channel *c); 
-static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset);
-static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsigned long ioctl_param);
-void buildC(channel *c, unsigned long ioctl_param);
-static int __init driver_init(void);
-static void __exit driver_cleanup(void);
 
 //==================== DEVICE SETUP =============================
 // This structure will hold the functions to be called

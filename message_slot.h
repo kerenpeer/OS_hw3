@@ -1,7 +1,13 @@
-#ifndef CHARDEV_H
-#define CHARDEV_H
-
 #include <linux/ioctl.h>
+#include <linux/kernel.h>   /* We're doing kernel work */
+#include <linux/module.h>   /* Specifically, a module */
+#include <linux/fs.h>       /* for register_chrdev */
+#include <linux/uaccess.h>  /* for get_user and put_user */
+#include <linux/string.h>   /* for memset. NOTE - not string.h!*/
+#include <linux/init.h>
+
+#ifndef MSGSLOT_H
+#define MSGSLOT_H
 
 // The major device number.
 #define MAJOR_NUM 240
@@ -26,5 +32,15 @@ struct msg_slot{
 } msg_slot;
 
 struct msg_slot driver[256] = {NULL};
+
+static int device_open(struct inode* inode, struct file* file);
+static int device_release(struct inode* inode, struct file*  file);
+static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset);
+int find_channel(msg_slot *ms, int id, channel *c); 
+static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset);
+static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsigned long ioctl_param);
+void buildC(channel *c, unsigned long ioctl_param);
+static int __init driver_init(void);
+static void __exit driver_cleanup(void);
 
 #endif
