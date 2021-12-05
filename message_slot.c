@@ -29,6 +29,9 @@ static int device_open(struct inode* inode, struct file* file){
   Msg_slot* ms;
 
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  if (ms == NULL){
+      return -EINVAL;
+  }
   minor = iminor(inode);
   ms -> minor = minor;
   ms -> channels = NULL;
