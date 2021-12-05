@@ -76,7 +76,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
       return -EWOULDBLOCK;
   len = c -> msg_len;
   }
-  if (len > length){
+  if (len == -1 || len > length){
      return -ENOSPC;
   }
   for(i = 0; i < len ; i++){
