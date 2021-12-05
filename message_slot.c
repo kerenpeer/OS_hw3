@@ -37,6 +37,8 @@ static int device_open(struct inode* inode, struct file* file){
   ms -> minor = minor;
   ms -> channels = NULL;
   
+  driver[minor] = ms;
+  
   return SUCCESS;
 }
 
@@ -201,7 +203,7 @@ static int __init driver_init(void){
                        DEVICE_FILE_NAME, MAJOR_NUM );
     return rc;  //needed? 
   }
-
+  memset(driver,0,256*sizeof(Msg_slot));
   return 0;
 }
 

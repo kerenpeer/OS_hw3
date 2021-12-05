@@ -32,7 +32,7 @@ typedef struct msg_slot{
   struct channel *channels;
 } Msg_slot;
 
-struct Msg_slot driver[256];
+static struct Msg_slot driver[256];
 memset(driver,0,256*sizeof(Msg_slot));
 
 static int device_open(struct inode* inode, struct file* file);
