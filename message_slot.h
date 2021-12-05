@@ -25,6 +25,6 @@ struct msg_slot{
   struct channel *channels;
 } msg_slot;
 
-msg_slot driver[256] = {NULL};
+struct msg_slot driver[256] = {NULL};
 
 #endif
