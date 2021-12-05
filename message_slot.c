@@ -183,6 +183,18 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
   return SUCCESS;
 }
 
+//==================== DEVICE SETUP =============================
+// This structure will hold the functions to be called
+// when a process does something to the device we created
+struct file_operations Fops ={
+  .owner	  = THIS_MODULE, 
+  .read           = device_read,
+  .write          = device_write,
+  .open           = device_open,
+  .unlocked_ioctl = device_ioctl,
+  .release        = device_release,
+};
+
 // Initialize the module - Register the character device
 static int __init driver_init(void){
   int rc = -1;
@@ -222,18 +234,6 @@ static void __exit driver_cleanup(void){
   kfree(driver);
   unregister_chrdev(MAJOR_NUM, DEVICE_RANGE_NAME);
 }
-
-//==================== DEVICE SETUP =============================
-// This structure will hold the functions to be called
-// when a process does something to the device we created
-struct file_operations Fops ={
-  .owner	  = THIS_MODULE, 
-  .read           = device_read,
-  .write          = device_write,
-  .open           = device_open,
-  .unlocked_ioctl = device_ioctl,
-  .release        = device_release,
-};
 
 //---------------------------------------------------------------
 module_init(driver_init);
