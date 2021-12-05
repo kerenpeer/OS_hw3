@@ -21,14 +21,14 @@
 #define SUCCESS 0
 
 typedef struct channel{
-  int id;
-  char *msg;
-  int msg_len;
+  int id = -1;
+  char *msg = NULL;
+  int msg_len = -1;
   struct channel* next;
 } Channel;
 
 typedef struct msg_slot{
-  int minor;
+  int minor = -1;
   struct channel *channels;
 } Msg_slot;
 
