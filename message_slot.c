@@ -48,13 +48,14 @@ static int device_release(struct inode* inode, struct file*  file){
 // a process which has already opened
 // the device file attempts to read from it
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
-  int channel_id, minor, res, i, len;
+  int minor, res, i, len;
   ssize_t j;
   Msg_slot *ms;
   char *msg;
   Channel *c;
+  void* channel_id;
 
-  channel_id = (int)(file -> private_data);
+  channel_id = file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
   if(ms == NULL){
@@ -64,7 +65,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(ms, channel_id, c);
+  res = find_channel(ms, &channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
