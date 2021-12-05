@@ -30,6 +30,29 @@ struct file_operations Fops ={
   .release        = device_release,
 };
 
+//================== HELP FUNCTIONS ===========================
+int find_channel(Msg_slot* ms, int id, Channel* c){
+  Channel* head;
+
+  head = ms -> channels;
+  while(head != NULL){
+    if(head -> id == id){
+      c = head;
+      return 0;
+    }
+    head = head -> next;
+  }
+  return -1;
+}
+
+//---------------------------------------------------------------
+void buildC(Channel *c, unsigned long ioctl_param){
+    c -> id = ioctl_param;
+    c -> msg = NULL;
+    c -> msg_len = -1;
+    c -> next = NULL;
+}
+
 //================== DEVICE FUNCTIONS ===========================
 static int device_open(struct inode* inode, struct file* file){
   int minor;
@@ -93,21 +116,6 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
       }
   }
   return len;
-}
-
-//---------------------------------------------------------------
-int find_channel(Msg_slot* ms, int id, Channel* c){
-  Channel* head;
-
-  head = ms -> channels;
-  while(head != NULL){
-    if(head -> id == id){
-      c = head;
-      return 0;
-    }
-    head = head -> next;
-  }
-  return -1;
 }
 
 //---------------------------------------------------------------
@@ -187,15 +195,6 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
   return SUCCESS;
 }
 
-//----------------------------------------------------------------
-void buildC(Channel *c, unsigned long ioctl_param){
-    c -> id = ioctl_param;
-    c -> msg = NULL;
-    c -> msg_len = -1;
-    c -> next = NULL;
-}
-
-//---------------------------------------------------------------
 // Initialize the module - Register the character device
 static int __init driver_init(void){
   int rc = -1;

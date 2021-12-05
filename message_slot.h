@@ -26,7 +26,7 @@ typedef struct msg_slot{
 } Msg_slot;
 
 static Msg_slot* driver[256];
-
+/*
 static int device_open(struct inode* inode, struct file* file);
 static int device_release(struct inode* inode, struct file*  file);
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset);
@@ -36,5 +36,6 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
 void buildC(Channel *c, unsigned long ioctl_param);
 static int __init driver_init(void);
 static void __exit driver_cleanup(void);
+*/
 
 #endif
