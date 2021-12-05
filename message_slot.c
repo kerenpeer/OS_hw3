@@ -20,6 +20,31 @@ MODULE_LICENSE("GPL");
 // Our custom definitions of IOCTL operations
 #include "message_slot.h"
 
+//==================== DEVICE SETUP =============================
+// This structure will hold the functions to be called
+// when a process does something to the device we created
+struct file_operations Fops ={
+  .owner	  = THIS_MODULE, 
+  .read           = device_read,
+  .write          = device_write,
+  .open           = device_open,
+  .unlocked_ioctl = device_ioctl,
+  .release        = device_release,
+};
+
+struct channel{
+  int id;
+  char *msg;
+  int msg_len;
+  channel* next;
+} channel;
+
+struct msg_slot{
+  int minor;
+  channel *channels;
+} msg_slot;
+
+static msg_slot driver[256] = {NULL};
 //================== DEVICE FUNCTIONS ===========================
 static int device_open(struct inode* inode, struct file* file){
   int minor;
@@ -176,32 +201,6 @@ void buildC(c, ioctl_param){
     c -> msg_len = -1;
     c -> next = NULL;
 }
-
-//==================== DEVICE SETUP =============================
-// This structure will hold the functions to be called
-// when a process does something to the device we created
-struct file_operations Fops ={
-  .owner	  = THIS_MODULE, 
-  .read           = device_read,
-  .write          = device_write,
-  .open           = device_open,
-  .unlocked_ioctl = device_ioctl,
-  .release        = device_release,
-};
-
-struct channel{
-  int id;
-  char *msg;
-  int msg_len;
-  channel* next;
-} channel;
-
-struct msg_slot{
-  int minor;
-  channel *channels;
-} msg_slot;
-
-static msg_slot driver[256] = {NULL};
 
 //---------------------------------------------------------------
 // Initialize the module - Register the character device
