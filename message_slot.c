@@ -63,7 +63,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
     return -EINVAL;     //validate error
   }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-  memset(c, 0, sizeof(Channel));
+  memset(c, 0, sizeof(Channel*));
   if (c == NULL){
       return -EINVAL;
   }
