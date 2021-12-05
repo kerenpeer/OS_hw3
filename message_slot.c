@@ -212,13 +212,6 @@ static void __exit driver_cleanup(void){
   // Should always succeed
   int i;
   Channel *Clist, *tmp;
-  Clist =  = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-  memset(Clist, 0, sizeof(Channel));
-  tmp = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-  memset(tmp, 0, sizeof(Channel));
-  if (Clist == NULL || tmp == NULL){
-      return -EINVAL;
-  }
   for(i=0; i < 256; i++){
     if(driver[i] != NULL){
        Clist = driver[i]-> channels;
