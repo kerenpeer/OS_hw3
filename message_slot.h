@@ -1,3 +1,4 @@
+#include <linux/ioctl.h>
 
 #ifndef MSGSLOT_H
 #define MSGSLOT_H
