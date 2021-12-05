@@ -61,11 +61,11 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
-  c = (channel*)kmalloc(sizeof(channel),GFP_KERNEL);
+  c = (Channel*)kmalloc(sizeof(channel),GFP_KERNEL);
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(ms, &channel_id, c);
+  res = find_channel(ms, (int)*channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
