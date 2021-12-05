@@ -25,7 +25,6 @@ typedef struct msg_slot{
   struct channel *channels;
 } Msg_slot;
 
-static Msg_slot* driver[256];
 /*
 static int device_open(struct inode* inode, struct file* file);
 static int device_release(struct inode* inode, struct file*  file);

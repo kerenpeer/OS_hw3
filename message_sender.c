@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
         perror("Error in opening file descriptor for write");
         exit(1);
     }
-    ioctl_outcome = unlocked_ioctl(fd,MSG_SLOT_CHANNEL,channel_id);
+    ioctl_outcome = ioctl(fd,MSG_SLOT_CHANNEL,channel_id);
     if(ioctl_outcome == -1){  
         perror("Error ioctrl cmd for write");
         exit(1);

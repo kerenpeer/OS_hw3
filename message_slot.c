@@ -17,6 +17,7 @@
 #define MODULE
 
 MODULE_LICENSE("GPL");
+static Msg_slot* driver[256];
 
 //================== HELP FUNCTIONS ===========================
 int find_channel(Msg_slot* ms, int id, Channel* c){
