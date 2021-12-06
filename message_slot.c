@@ -47,9 +47,9 @@ static int device_open(struct inode* inode, struct file* file){
   int minor;
   Msg_slot ms;
 
-  ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  &ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   memset(&ms, 0, sizeof(Msg_slot));
-  if (!ms){
+  if (ms == NULL){
       return -EINVAL;
   }
   minor = iminor(inode);
@@ -208,7 +208,7 @@ static int __init driver_init(void){
                        DEVICE_FILE_NAME, MAJOR_NUM );
     return rc;  //needed? 
   }
- driver = (Msg_slot*)kmalloc(256 * sizeof(Msg_slot),GFP_KERNEL);
+ //driver = (Msg_slot*)kmalloc(256 * sizeof(Msg_slot),GFP_KERNEL);
 // memset(driver,0,256*sizeof(Msg_slot));
   if(!driver){
     printk("Problem in driver");
@@ -235,7 +235,7 @@ static void __exit driver_cleanup(void){
          kfree(Clist);
          Clist = tmp;
        }
-       kfree(driver[i]);
+       kfree(&driver[i]);
     }
   }
   kfree(driver);
