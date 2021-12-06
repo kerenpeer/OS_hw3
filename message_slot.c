@@ -193,7 +193,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   printk("43.4");  
   for(i = 0; i < length ; i++){
     printk("44");  
-      if(get_user((res -> msg)[i], &buffer[i]) != 0){
+      if(get_user((res -> msg)[i], &buffer[i]) != 0 && &buffer[i] != NULL){
         printk("45");  
         return -EINVAL;     //validate error
       }
