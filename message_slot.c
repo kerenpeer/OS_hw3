@@ -153,7 +153,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   
   printk("37");  
   channel_id = *((int*)file -> private_data);
-  printk("channel id is: %d",*channel_id);  
+  printk("channel id is: %d",channel_id);  
   printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
   printk("minor is: %d\n",minor);  
