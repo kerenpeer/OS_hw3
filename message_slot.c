@@ -92,9 +92,9 @@ static int device_release(struct inode* inode, struct file*  file){
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
   int channel_id,minor, res, i, len;
   Msg_slot *ms;
-  char *msg;
   Channel *c;
   printk("20");  
+  
   len = -1;
   channel_id = *(int*)(file -> private_data);
   printk("21");  
