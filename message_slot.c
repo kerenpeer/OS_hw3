@@ -200,36 +200,50 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
 //----------------------------------------------------------------
 static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsigned long ioctl_param){
   int minor;
-  Msg_slot *msg_s;
+ // Msg_slot *msg_s;
   Channel *c, *prev;
 
   // Switch according to the ioctl called
   if(MSG_SLOT_CHANNEL == ioctl_command_id && ioctl_param != 0){
     // Get the parameter given to ioctl by the process
     minor = iminor(file->f_path.dentry->d_inode);
+    printk("di1\n");
     if(driver[minor] == NULL){
-       return -EINVAL;
+      printk("di2\n");
+      return -EINVAL;
     }
-    msg_s = driver[minor];
+   // msg_s = driver[minor];
+    printk("di3\n");
     c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+    printk("di4\n");
     memset(c, 0, sizeof(Channel));
+    printk("di5\n");
     if (c == NULL){
+      printk("di6\n");
       return -EINVAL;
     }
     buildC(c, ioctl_param);
+    printk("di7\n");
     file -> private_data = (void*) ioctl_param;
-    if(msg_s ->channels == NULL){
-      msg_s ->channels = c;
+    printk("di8\n");
+    if(driver[minor] ->channels == NULL){
+      printk("di9\n");
+      driver[minor] ->channels = c;
     }
     else{
-      prev =  msg_s -> channels;
+      printk("di10\n");
+      prev =  driver[minor] -> channels;
+      printk("di11\n");
       while(prev -> next != NULL){
+        printk("di12\n");
         prev = prev -> next;
       }
       prev -> next = c;
+      printk("di13\n");
     }
   }
   else {
+    printk("di14\n");
     return -EINVAL;
   }
   return SUCCESS;
