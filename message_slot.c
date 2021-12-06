@@ -95,7 +95,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   Channel *c;
   printk("20");  
   len = -1;
-  channel_id = (int*)file -> private_data;
+  channel_id = *(int*)file -> private_data;
   printk("21");  
   minor = iminor(file->f_path.dentry->d_inode);
   printk("22");  
@@ -113,7 +113,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
     printk("27");  
     return -EINVAL;
   }
-  res = find_channel(ms, *channel_id, c);
+  res = find_channel(ms, channel_id, c);
   printk("28");  
   if(res == -1){
     printk("29");  
@@ -152,7 +152,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   Channel *c;
   
   printk("37");  
-  channel_id = (int*)file -> private_data;
+  channel_id = *((int*)file -> private_data);
   printk("channel id is: %d",*channel_id);  
   printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
@@ -172,7 +172,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
       return -EINVAL;
   }
   printk("41.1");  
-  res = find_channel(ms, *channel_id, c);
+  res = find_channel(ms, channel_id, c);
   if(res == -1){
     printk("42");  
     return -EINVAL;
