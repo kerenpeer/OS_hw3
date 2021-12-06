@@ -25,12 +25,14 @@ int find_channel(Msg_slot* ms, int id, Channel* c){
   printk("We just entered find_channel. S'emek\n");
   printk("id in find_channel: %d\n",id);
   head = ms -> channels; 
+  printk("1"); 
   while(head != NULL){
     printk("head id is: %d", head->id);
-    printk("1"); 
     printk("2");  
     if(head -> id == id){
       c = head;
+      printk("c id is: %d\n", c->id);
+      printk("c msg is: %s\n", c->msg);
       return 0;
     }
     printk("3");  
