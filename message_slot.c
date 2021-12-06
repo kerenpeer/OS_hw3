@@ -198,7 +198,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
       len++;
   }
   printk("45.5");  
-  printk("message in write is: %s\n", *res->msg);  
+  printk("message in write is: %s\n", res->msg);  
   res -> msg_len = len;
   printk("46");  
   return len;
