@@ -47,7 +47,7 @@ static int device_open(struct inode* inode, struct file* file){
   int minor;
   Msg_slot ms;
 
-  ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  ms = (Msg_slot)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   memset(ms, 0, sizeof(Msg_slot));
   if (ms == NULL){
       return -EINVAL;
@@ -70,14 +70,14 @@ static int device_release(struct inode* inode, struct file*  file){
 // the device file attempts to read from it
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
   int *channel_id,minor, res, i, len;
-  Msg_slot *ms;
+  Msg_slot ms;
   char *msg;
   Channel *c;
 
   len = -1;
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
-  *ms = driver[minor];
+  ms = driver[minor];
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
@@ -86,7 +86,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(ms, *channel_id, c);
+  res = find_channel(*ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -111,7 +111,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
 // the device file attempts to write to it
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
   int *channel_id, minor, res, i, len;
-  Msg_slot *ms;
+  Msg_slot ms;
   char *msg;
   Channel *c;
 
@@ -126,7 +126,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(ms, *channel_id, c);
+  res = find_channel(*ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -148,7 +148,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
 //----------------------------------------------------------------
 static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsigned long ioctl_param){
   int minor;
-  Msg_slot *msg_s;
+  Msg_slot msg_s;
   Channel *c, *prev;
 
   // Switch according to the ioctl called
