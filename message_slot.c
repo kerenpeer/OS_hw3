@@ -120,13 +120,8 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
     printk("29");  
     return -EINVAL;
   }
-  msg = c -> msg;
-  printk("message is %s\n", msg);
+  printk("message is %s\n", c -> msg);
   printk("30");  
-  if(msg == NULL){
-    printk("31");  
-    return -EWOULDBLOCK;
-  }
   printk("32");  
   len = c -> msg_len;
   printk("33");  
@@ -136,7 +131,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   }
   for(i = 0; i < len ; i++){
     printk("35");  
-    if(put_user(msg[i], &buffer[i]) != 0){
+    if(put_user((c -> msg)[i], &buffer[i]) != 0){
       return -EINVAL;     //validate error
     }
   }
