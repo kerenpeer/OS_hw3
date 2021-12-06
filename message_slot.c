@@ -23,6 +23,7 @@ static Msg_slot* driver[256];
 int find_channel(Msg_slot* ms, int id, Channel* c){
   Channel* head;
   printk("We just entered find_channel. S'emek\n");
+  printk("id in find_channel: %d\n",id);
   head = ms -> channels;
   printk("head id is: %d", head->id);
   printk("1");  
@@ -152,7 +153,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   Channel *c;
   
   printk("37");  
-  channel_id = *((int*)file -> private_data);
+  channel_id = *(int*)file -> private_data;
   printk("channel id is: %d",channel_id);  
   printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
