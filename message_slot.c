@@ -50,7 +50,6 @@ static int device_open(struct inode* inode, struct file* file){
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   memset(ms, 0, sizeof(Msg_slot));
   if (ms == NULL){
-      printk(KERN_INFO "Message: ms is NULL\n");
       return -EINVAL;
   }
   minor = iminor(inode);
@@ -218,6 +217,7 @@ static int __init driver_init(void){
     //printk("opened driver");
   //}
   for (i=0; i < 256; i++){
+    driver[i] = (Msg_slot*)kmalloc(sizeof(Msg_slot), GFP_KERNEL);
     driver[i] = NULL;
     if(!driver[i]){
         printk("Hello started driver in %d",i);
