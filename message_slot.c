@@ -24,22 +24,31 @@ int find_channel(Msg_slot* ms, int id, Channel* c){
   Channel* head;
 
   head = ms -> channels;
+  printk("1");  
   while(head != NULL){
+    printk("2");  
     if(head -> id == id){
       c = head;
       return 0;
     }
+    printk("3");  
     head = head -> next;
   }
+  printk("4");  
   return -1;
 }
 
 //---------------------------------------------------------------
 void buildC(Channel *c, unsigned long ioctl_param){
+    printk("5");  
     c -> id = ioctl_param;
+    printk("6");  
     c -> msg = NULL;
+    printk("7");  
     c -> msg_len = -1;
+    printk("8");  
     c -> next = NULL;
+    printk("9");  
 }
 
 //================== DEVICE FUNCTIONS ===========================
@@ -47,17 +56,26 @@ static int device_open(struct inode* inode, struct file* file){
   int minor;
   Msg_slot* ms;
 
+  printk("10");  
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  printk("11");  
   memset(ms, 0, sizeof(Msg_slot));
+  printk("12");  
   if (ms == NULL){
-      return -EINVAL;
+    printk("13");  
+    return -EINVAL;
   }
+  printk("14");  
   minor = iminor(inode);
+  printk("15");  
   ms->minor = minor;
+  printk("16");  
   ms->channels = NULL;
-  
+  printk("17");  
   driver[minor] = ms;
-  printk("driver in %d is %d", minor, driver[minor]->minor);  
+  printk("18");  
+  printk("driver in %d is %d", minor, driver[minor]->minor); 
+  printk("19");   
   return SUCCESS;
 }
 
@@ -74,36 +92,52 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   Msg_slot *ms;
   char *msg;
   Channel *c;
-
+  printk("20");  
   len = -1;
   channel_id = (int*)file -> private_data;
+  printk("21");  
   minor = iminor(file->f_path.dentry->d_inode);
+  printk("22");  
   ms = driver[minor];
+  printk("23");  
   if(!ms){
+    printk("24");  
     return -EINVAL;     //validate error
   }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+  printk("25");  
   memset(c, 0, sizeof(Channel));
+  printk("26");  
   if (c == NULL){
-      return -EINVAL;
+    printk("27");  
+    return -EINVAL;
   }
   res = find_channel(ms, *channel_id, c);
+  printk("28");  
   if(res == -1){
+    printk("29");  
     return -EINVAL;
   }
   msg = c -> msg;
+  printk("30");  
   if(msg == NULL){
-      return -EWOULDBLOCK;
-  len = c -> msg_len;
+    printk("31");  
+    return -EWOULDBLOCK;
   }
+  printk("32");  
+  len = c -> msg_len;
+  printk("33");  
   if (len == -1 || len > length){
-     return -ENOSPC;
+    printk("34");  
+    return -ENOSPC;
   }
   for(i = 0; i < len ; i++){
-      if(put_user(msg[i], &buffer[i]) != 0){
-        return -EINVAL;     //validate error
-      }
+    printk("35");  
+    if(put_user(msg[i], &buffer[i]) != 0){
+      return -EINVAL;     //validate error
+    }
   }
+  printk("36");  
   return len;
 }
 
@@ -115,9 +149,12 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   Msg_slot *ms;
   char *msg;
   Channel *c;
-
+  
+  printk("37");  
   channel_id = (int*)file -> private_data;
+  printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
+  printk("39\n");  
   ms = driver[minor];
   if(!ms){
     return -EINVAL;     //validate error
@@ -220,9 +257,6 @@ static int __init driver_init(void){
   for (i=0; i < 256; i++){
     driver[i] = (Msg_slot*)kmalloc(sizeof(Msg_slot), GFP_KERNEL);
     driver[i] = NULL;
-    if(!driver[i]){
-        printk("Hello started driver in %d",i);
-    }
   }
   return 0;
 }
