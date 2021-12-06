@@ -219,6 +219,9 @@ static int __init driver_init(void){
   //}
   for (i=0; i < 256; i++){
     driver[i] = NULL;
+    if(!driver[i]){
+        printk("Hello started driver in %d",i);
+    }
   }
   return 0;
 }
