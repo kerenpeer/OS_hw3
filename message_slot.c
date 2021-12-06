@@ -222,33 +222,35 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
    // msg_s = driver[minor];
     printk("di3\n");
     c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-    printk("di4\n");
-    memset(c, 0, sizeof(Channel));
-    printk("di5\n");
-    if (c == NULL){
-      printk("di6\n");
-      return -EINVAL;
-    }
-    buildC(c, ioctl_param);
-    printk("di7\n");
-    file -> private_data = &ioctl_param;
-    printk("new c id is %d",*(int*)(file -> private_data));
-    printk("di8\n");
-    if(driver[minor] ->channels == NULL){
-      printk("di9\n");
-      driver[minor] ->channels = c;
-      printk("c id is: %d",driver[minor] ->channels->id);
-    }
-    else{
-      printk("di10\n");
-      prev =  driver[minor] -> channels;
-      printk("di11\n");
-      while(prev -> next != NULL){
-        printk("di12\n");
-        prev = prev -> next;
+    if(find_channel(driver[minor],ioctl_param,c) == -1){
+      printk("di4\n");
+      memset(c, 0, sizeof(Channel));
+      printk("di5\n");
+      if (c == NULL){
+        printk("di6\n");
+        return -EINVAL;
       }
-      prev -> next = c;
-      printk("di13\n");
+      buildC(c, ioctl_param);
+      printk("di7\n");
+      file -> private_data = &ioctl_param;
+      printk("new c id is %d",*(int*)(file -> private_data));
+      printk("di8\n");
+      if(driver[minor] ->channels == NULL){
+        printk("di9\n");
+        driver[minor] ->channels = c;
+        printk("c id is: %d",driver[minor] ->channels->id);
+      }
+      else{
+        printk("di10\n");
+        prev =  driver[minor] -> channels;
+        printk("di11\n");
+        while(prev -> next != NULL){
+          printk("di12\n");
+          prev = prev -> next;
+        }
+        prev -> next = c;
+        printk("di13\n");
+      }
     }
   }
   else {
