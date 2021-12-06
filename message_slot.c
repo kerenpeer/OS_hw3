@@ -114,13 +114,14 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
     printk("27");  
     return -EINVAL;
   }
-  res = find_channel(ms, 4, c);
+  res = find_channel(ms, 4, c);     /////fixxxxxxxxxxxxx
   printk("28");  
   if(res == -1){
     printk("29");  
     return -EINVAL;
   }
   msg = c -> msg;
+  printk("message is %s\n", msg);
   printk("30");  
   if(msg == NULL){
     printk("31");  
