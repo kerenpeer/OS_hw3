@@ -45,18 +45,18 @@ void buildC(Channel *c, unsigned long ioctl_param){
 //================== DEVICE FUNCTIONS ===========================
 static int device_open(struct inode* inode, struct file* file){
   int minor;
-  Msg_slot ms;
+  Msg_slot* ms;
 
-  &ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   memset(&ms, 0, sizeof(Msg_slot));
-  if (ms == NULL){
+  if (!ms){
       return -EINVAL;
   }
   minor = iminor(inode);
-  ms.minor = minor;
-  ms.channels = NULL;
+  ms->minor = minor;
+  ms->channels = NULL;
   
-  driver[minor] = ms;  
+  driver[minor] = *ms;  
   return SUCCESS;
 }
 
@@ -78,7 +78,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
-  if(ms == NULL){
+  if(!ms){
     return -EINVAL;     //validate error
   }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
@@ -118,7 +118,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
-  if(ms == NULL){
+  if(!ms){
     return -EINVAL;     //validate error
   }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
@@ -210,12 +210,12 @@ static int __init driver_init(void){
   }
  //driver = (Msg_slot*)kmalloc(256 * sizeof(Msg_slot),GFP_KERNEL);
 // memset(driver,0,256*sizeof(Msg_slot));
-  if(!driver){
-    printk("Problem in driver");
-  }
-  if(driver != NULL){
-    printk("opened driver");
-  }
+ // if(!driver){
+   // printk("Problem in driver");
+  //}
+  //if(driver != NULL){
+    //printk("opened driver");
+  //}
   return 0;
 }
 
@@ -228,7 +228,7 @@ static void __exit driver_cleanup(void){
   Channel *Clist, *tmp;
   for(i=0; i < 256; i++){
     if(driver[i] != NULL){
-       Clist = driver[i]-> channels;
+       Clist = driver[i].channels;
        while(Clist != NULL){
          kfree(Clist -> msg);
          tmp = Clist -> next;
