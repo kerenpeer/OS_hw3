@@ -57,6 +57,7 @@ static int device_open(struct inode* inode, struct file* file){
   ms -> channels = NULL;
   
   driver[minor] = ms;
+  printk("msgslot is in: %d",driver[minor]->minor);
   
   return SUCCESS;
 }
