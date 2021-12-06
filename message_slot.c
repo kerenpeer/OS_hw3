@@ -47,7 +47,7 @@ static int device_open(struct inode* inode, struct file* file){
   int minor;
   Msg_slot ms;
 
-  ms = (Msg_slot)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   memset(ms, 0, sizeof(Msg_slot));
   if (ms == NULL){
       return -EINVAL;
