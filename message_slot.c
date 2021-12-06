@@ -154,32 +154,39 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   channel_id = (int*)file -> private_data;
   printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
-  printk("39\n");  
+  printk("39");  
   ms = driver[minor];
   if(!ms){
+    printk("40");  
     return -EINVAL;     //validate error
   }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
   memset(c, 0, sizeof(Channel));
   if (c == NULL){
+      printk("41");  
       return -EINVAL;
   }
   res = find_channel(ms, *channel_id, c);
   if(res == -1){
+    printk("42");  
     return -EINVAL;
   }
   if(length <= 0 || length > 128){
+    printk("43");  
     return -EMSGSIZE;
   }
   len = 0;
   msg = c -> msg;
   for(i = 0; i < length ; i++){
+    printk("44");  
       if(get_user(msg[i], &buffer[i]) != 0){
+        printk("45");  
         return -EINVAL;     //validate error
       }
       len++;
   }
   c -> msg_len = len;
+  printk("46");  
   return len;
 }
 
