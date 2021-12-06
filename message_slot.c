@@ -24,6 +24,7 @@ int find_channel(Msg_slot* ms, int id, Channel* c){
   Channel* head;
   printk("We just entered find_channel. S'emek\n");
   head = ms -> channels;
+  printk("head id is: %d", head->id);
   printk("1");  
   while(head != NULL){
     printk("2");  
@@ -152,6 +153,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   
   printk("37");  
   channel_id = (int*)file -> private_data;
+  printk("channel id is: %d",channel_id);  
   printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
   printk("minor is: %d\n",minor);  
@@ -229,6 +231,7 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
     if(driver[minor] ->channels == NULL){
       printk("di9\n");
       driver[minor] ->channels = c;
+      printk("c id is: %d",driver[minor] ->channels->id);
     }
     else{
       printk("di10\n");
