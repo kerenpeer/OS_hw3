@@ -48,8 +48,8 @@ static int device_open(struct inode* inode, struct file* file){
   Msg_slot* ms;
 
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
-  memset(&ms, 0, sizeof(Msg_slot));
-  if (!ms){
+  memset(ms, 0, sizeof(Msg_slot));
+  if (ms == NULL){
       return -EINVAL;
   }
   minor = iminor(inode);
@@ -78,11 +78,8 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
-  if(!ms){
-    return -EINVAL;     //validate error
-  }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-  memset(c, 0, sizeof(Channel));
+ memset(c, 0, sizeof(Channel));
   if (c == NULL){
       return -EINVAL;
   }
@@ -118,9 +115,6 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
-  if(!ms){
-    return -EINVAL;     //validate error
-  }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
   memset(c, 0, sizeof(Channel));
   if (c == NULL){
@@ -155,9 +149,6 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
   if(MSG_SLOT_CHANNEL == ioctl_command_id && ioctl_param != 0){
     // Get the parameter given to ioctl by the process
     minor = iminor(file->f_path.dentry->d_inode);
-    if(driver[minor] == NULL){
-       return -EINVAL;
-    }
     msg_s = driver[minor];
     c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
     memset(c, 0, sizeof(Channel));
