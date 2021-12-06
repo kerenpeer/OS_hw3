@@ -160,23 +160,28 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
     printk("40");  
     return -EINVAL;     //validate error
   }
+  printk("40.2");  
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
   memset(c, 0, sizeof(Channel));
+  printk("40.5");  
   if (c == NULL){
       printk("41");  
       return -EINVAL;
   }
+  printk("41.1");  
   res = find_channel(ms, *channel_id, c);
   if(res == -1){
     printk("42");  
     return -EINVAL;
   }
+  printk("42.3");  
   if(length <= 0 || length > 128){
     printk("43");  
     return -EMSGSIZE;
   }
   len = 0;
   msg = c -> msg;
+  printk("43.4");  
   for(i = 0; i < length ; i++){
     printk("44");  
       if(get_user(msg[i], &buffer[i]) != 0){
@@ -185,6 +190,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
       }
       len++;
   }
+  printk("45.5");  
   c -> msg_len = len;
   printk("46");  
   return len;
