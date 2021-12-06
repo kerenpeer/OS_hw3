@@ -48,8 +48,8 @@ static int device_open(struct inode* inode, struct file* file){
   Msg_slot ms;
 
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
-  memset(*ms, 0, sizeof(Msg_slot));
-  if (ms == NULL){
+  memset(&ms, 0, sizeof(Msg_slot));
+  if (!ms){
       return -EINVAL;
   }
   minor = iminor(inode);
@@ -86,7 +86,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(*ms, *channel_id, c);
+  res = find_channel(&ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -126,7 +126,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(*ms, *channel_id, c);
+  res = find_channel(&ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -166,11 +166,11 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
     }
     buildC(c, ioctl_param);
     file -> private_data = (void*) ioctl_param;
-    if(msg_s -> channels == NULL){
-      msg_s -> channels = c;
+    if(msg_s.channels == NULL){
+      msg_s.channels = c;
     }
     else{
-      prev =  msg_s -> channels;
+      prev =  msg_s.channels;
       while(prev -> next != NULL){
         prev = prev -> next;
       }
@@ -208,9 +208,9 @@ static int __init driver_init(void){
                        DEVICE_FILE_NAME, MAJOR_NUM );
     return rc;  //needed? 
   }
- // driver = (Msg_slot**)kmalloc(256 * sizeof(Msg_slot*),GFP_KERNEL);
- // memset(driver,0,256*sizeof(Msg_slot));
-  if(driver == NULL){
+ driver = (Msg_slot*)kmalloc(256 * sizeof(Msg_slot),GFP_KERNEL);
+// memset(driver,0,256*sizeof(Msg_slot));
+  if(!driver){
     printk("Problem in driver");
   }
   if(driver != NULL){
