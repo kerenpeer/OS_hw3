@@ -57,7 +57,7 @@ static int device_open(struct inode* inode, struct file* file){
   ms -> channels = NULL;
   
   driver[minor] = *ms;
-  printk("msgslot is in: %d",driver[minor]->minor);
+  printk("msgslot is in: %d",driver[minor].minor);
   
   return SUCCESS;
 }
@@ -79,7 +79,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   len = -1;
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
-  ms = driver[minor];
+  *ms = driver[minor];
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
@@ -119,7 +119,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
 
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
-  ms = driver[minor];
+  *ms = driver[minor];
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
