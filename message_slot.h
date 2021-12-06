@@ -22,8 +22,7 @@ typedef struct channel{
 
 typedef struct msg_slot{
   int minor;
-  int empty;
-  struct channel *channels;
+  Channel *channels;
 } Msg_slot;
 
 /*
