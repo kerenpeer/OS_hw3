@@ -97,7 +97,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   len = -1;
   channel_id = (int*)file -> private_data;
   printk("21");  
-  minor = (file -> private_data) -> minor;
+  minor = iminor(file->f_path.dentry->d_inode);
   printk("22");  
   ms = driver[minor];
   printk("23");  
@@ -155,6 +155,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   channel_id = (int*)file -> private_data;
   printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
+  printk("minor is: %d\n",minor);  
   printk("39");  
   ms = driver[minor];
   if(!ms){
