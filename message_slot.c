@@ -50,6 +50,7 @@ static int device_open(struct inode* inode, struct file* file){
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   memset(ms, 0, sizeof(Msg_slot));
   if (ms == NULL){
+      printk(KERN_INFO "Message: ms is NULL\n");
       return -EINVAL;
   }
   minor = iminor(inode);

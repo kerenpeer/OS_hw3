@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
     fd = open(file_path, O_WRONLY);
     if(fd < 0){
         perror("Error in openinggg file descriptor for write");
-        fprintf(stderr, "file path is: %s", file_path);
+        fprintf(stderr, "file path is: %s\n", file_path);
         exit(1);
     }
     ioctl_outcome = ioctl(fd,MSG_SLOT_CHANNEL,channel_id);
