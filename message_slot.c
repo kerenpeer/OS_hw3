@@ -17,7 +17,7 @@
 #define MODULE
 
 MODULE_LICENSE("GPL");
-static Msg_slot driver[256];
+static Msg_slot* driver[256];
 
 //================== HELP FUNCTIONS ===========================
 int find_channel(Msg_slot* ms, int id, Channel* c){
@@ -54,9 +54,10 @@ static int device_open(struct inode* inode, struct file* file){
   }
   minor = iminor(inode);
   ms->minor = minor;
+  ms->empty = 0;
   ms->channels = NULL;
   
-  driver[minor] = *ms;  
+  driver[minor] = ms;  
   return SUCCESS;
 }
 
@@ -70,7 +71,7 @@ static int device_release(struct inode* inode, struct file*  file){
 // the device file attempts to read from it
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
   int *channel_id,minor, res, i, len;
-  Msg_slot ms;
+  Msg_slot *ms;
   char *msg;
   Channel *c;
 
@@ -78,12 +79,15 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
+  if(!ms){
+    return -EINVAL;     //validate error
+  }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
- memset(c, 0, sizeof(Channel));
+  memset(c, 0, sizeof(Channel));
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(&ms, *channel_id, c);
+  res = find_channel(ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -108,19 +112,22 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
 // the device file attempts to write to it
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
   int *channel_id, minor, res, i, len;
-  Msg_slot ms;
+  Msg_slot *ms;
   char *msg;
   Channel *c;
 
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
   ms = driver[minor];
+  if(!ms){
+    return -EINVAL;     //validate error
+  }
   c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
   memset(c, 0, sizeof(Channel));
   if (c == NULL){
       return -EINVAL;
   }
-  res = find_channel(&ms, *channel_id, c);
+  res = find_channel(ms, *channel_id, c);
   if(res == -1){
     return -EINVAL;
   }
@@ -142,13 +149,16 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
 //----------------------------------------------------------------
 static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsigned long ioctl_param){
   int minor;
-  Msg_slot msg_s;
+  Msg_slot *msg_s;
   Channel *c, *prev;
 
   // Switch according to the ioctl called
   if(MSG_SLOT_CHANNEL == ioctl_command_id && ioctl_param != 0){
     // Get the parameter given to ioctl by the process
     minor = iminor(file->f_path.dentry->d_inode);
+    if(driver[minor] == NULL){
+       return -EINVAL;
+    }
     msg_s = driver[minor];
     c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
     memset(c, 0, sizeof(Channel));
@@ -157,11 +167,11 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
     }
     buildC(c, ioctl_param);
     file -> private_data = (void*) ioctl_param;
-    if(msg_s.channels == NULL){
-      msg_s.channels = c;
+    if(msg_s ->channels == NULL){
+      msg_s ->channels = c;
     }
     else{
-      prev =  msg_s.channels;
+      prev =  msg_s -> channels;
       while(prev -> next != NULL){
         prev = prev -> next;
       }
@@ -207,6 +217,9 @@ static int __init driver_init(void){
   //if(driver != NULL){
     //printk("opened driver");
   //}
+  for (i=0; i < 256; i++){
+    driver[i] = NULL;
+  }
   return 0;
 }
 
@@ -219,7 +232,7 @@ static void __exit driver_cleanup(void){
   Channel *Clist, *tmp;
   for(i=0; i < 256; i++){
     if(driver[i] != NULL){
-       Clist = driver[i].channels;
+       Clist = driver[i] -> channels;
        while(Clist != NULL){
          kfree(Clist -> msg);
          tmp = Clist -> next;
