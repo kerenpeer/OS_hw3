@@ -59,26 +59,28 @@ static int device_open(struct inode* inode, struct file* file){
   int minor;
   Msg_slot* ms;
 
-  printk("10");  
-  ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
-  printk("11");  
-  memset(ms, 0, sizeof(Msg_slot));
-  printk("12");  
-  if (ms == NULL){
-    printk("13");  
-    return -EINVAL;
-  }
-  printk("14");  
   minor = iminor(inode);
-  printk("15");  
-  ms->minor = minor;
-  printk("16");  
-  ms->channels = NULL;
-  printk("17");  
-  driver[minor] = ms;
-  printk("18");  
-  printk("driver in %d is %d", minor, driver[minor]->minor); 
-  printk("19");   
+  if(driver[minor] == NULL){
+    printk("10");  
+    ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+    printk("11");  
+    memset(ms, 0, sizeof(Msg_slot));
+    printk("12");  
+    if (ms == NULL){
+      printk("13");  
+      return -EINVAL;
+    }
+    printk("14");  
+    printk("15");  
+    ms->minor = minor;
+    printk("16");  
+    ms->channels = NULL;
+    printk("17");  
+    driver[minor] = ms;
+    printk("18");  
+    printk("driver in %d is %d", minor, driver[minor]->minor); 
+    printk("19");  
+  } 
   return SUCCESS;
 }
 
