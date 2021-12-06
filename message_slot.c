@@ -17,7 +17,7 @@
 #define MODULE
 
 MODULE_LICENSE("GPL");
-static Msg_slot driver;
+static Msg_slot* driver;
 
 //================== HELP FUNCTIONS ===========================
 int find_channel(Msg_slot* ms, int id, Channel* c){
@@ -210,7 +210,7 @@ static int __init driver_init(void){
                        DEVICE_FILE_NAME, MAJOR_NUM );
     return rc;  //needed? 
   }
-  driver = (Msg_slot*)kmalloc(256 * sizeof(Msg_slot),GFP_KERNEL);
+  driver = (Msg_slot**)kmalloc(256 * sizeof(Msg_slot*),GFP_KERNEL);
   memset(driver,0,256*sizeof(Msg_slot));
   if(driver == NULL){
     printk("Problem in driver");
