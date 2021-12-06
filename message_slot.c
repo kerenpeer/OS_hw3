@@ -54,7 +54,6 @@ static int device_open(struct inode* inode, struct file* file){
   }
   minor = iminor(inode);
   ms->minor = minor;
-  ms->empty = 0;
   ms->channels = NULL;
   
   driver[minor] = ms;  
