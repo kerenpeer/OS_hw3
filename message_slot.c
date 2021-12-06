@@ -89,7 +89,7 @@ static int device_release(struct inode* inode, struct file*  file){
 // a process which has already opened
 // the device file attempts to read from it
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
-  int *channel_id,minor, res, i, len;
+  int channel_id,minor, res, i, len;
   Msg_slot *ms;
   char *msg;
   Channel *c;
@@ -146,7 +146,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
 // a processs which has already opened
 // the device file attempts to write to it
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
-  int *channel_id, minor, res, i, len;
+  int channel_id, minor, res, i, len;
   Msg_slot *ms;
   char *msg;
   Channel *c;
