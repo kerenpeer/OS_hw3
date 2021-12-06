@@ -212,7 +212,10 @@ static int __init driver_init(void){
   }
   memset(driver,0,256*sizeof(Msg_slot*));
   if(driver == NULL){
-    printk("Problen in driver");
+    printk("Problem in driver");
+  }
+  if(driver != NULL){
+    printk("opened driver");
   }
   return 0;
 }
