@@ -24,10 +24,10 @@ int find_channel(Msg_slot* ms, int id, Channel* c){
   Channel* head;
   printk("We just entered find_channel. S'emek\n");
   printk("id in find_channel: %d\n",id);
-  head = ms -> channels;
-  printk("head id is: %d", head->id);
-  printk("1");  
+  head = ms -> channels; 
   while(head != NULL){
+    printk("head id is: %d", head->id);
+    printk("1"); 
     printk("2");  
     if(head -> id == id){
       c = head;
@@ -222,14 +222,14 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
    // msg_s = driver[minor];
     printk("di3\n");
     c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+    printk("di4\n");
+    memset(c, 0, sizeof(Channel));
+    printk("di5\n");
+    if (c == NULL){
+      printk("di6\n");
+      return -EINVAL;
+    }
     if(find_channel(driver[minor],ioctl_param,c) == -1){
-      printk("di4\n");
-      memset(c, 0, sizeof(Channel));
-      printk("di5\n");
-      if (c == NULL){
-        printk("di6\n");
-        return -EINVAL;
-      }
       buildC(c, ioctl_param);
       printk("di7\n");
       file -> private_data = &ioctl_param;
