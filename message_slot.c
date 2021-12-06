@@ -22,7 +22,7 @@ static Msg_slot* driver[256];
 //================== HELP FUNCTIONS ===========================
 int find_channel(Msg_slot* ms, int id, Channel* c){
   Channel* head;
-
+  printk("We just entered find_channel. S'emek\n");
   head = ms -> channels;
   printk("1");  
   while(head != NULL){
