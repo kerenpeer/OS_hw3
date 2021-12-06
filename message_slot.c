@@ -73,6 +73,7 @@ static int device_open(struct inode* inode, struct file* file){
   ms->channels = NULL;
   printk("17");  
   driver[minor] = ms;
+  file -> private_data = (*void) ms;
   printk("18");  
   printk("driver in %d is %d", minor, driver[minor]->minor); 
   printk("19");   
@@ -96,7 +97,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   len = -1;
   channel_id = (int*)file -> private_data;
   printk("21");  
-  minor = iminor(file->f_path.dentry->d_inode);
+  minor = (file -> private_data) -> minor;
   printk("22");  
   ms = driver[minor];
   printk("23");  
