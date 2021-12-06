@@ -121,11 +121,11 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
     printk("29");  
     return -EINVAL;
   }
-  printk("c id is %d\n", *res -> id);
-  printk("message is %s\n", *res -> msg);
+  printk("c id is %d\n", res -> id);
+  printk("message is %s\n", res -> msg);
   printk("30");  
   printk("32");  
-  len = *res -> msg_len;
+  len = res -> msg_len;
   printk("33");  
   if (len == -1 || len > length){
     printk("34");  
@@ -133,7 +133,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   }
   for(i = 0; i < len ; i++){
     printk("35");  
-    if(put_user((*res -> msg)[i], &buffer[i]) != 0){
+    if(put_user((res -> msg)[i], &buffer[i]) != 0){
       return -EINVAL;     //validate error
     }
   }
@@ -183,15 +183,15 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
     return -EMSGSIZE;
   }
   len = 0;
-  *res-> msg = (char*)kmalloc(length*sizeof(char),GFP_KERNEL);
-  if(*res -> msg == NULL){
+  res-> msg = (char*)kmalloc(length*sizeof(char),GFP_KERNEL);
+  if(res -> msg == NULL){
     printk("43.1");  
     return -EINVAL;
   }
   printk("43.4");  
   for(i = 0; i < length ; i++){
     printk("44");  
-      if(get_user((*res -> msg)[i], &buffer[i]) != 0){
+      if(get_user((res -> msg)[i], &buffer[i]) != 0){
         printk("45");  
         return -EINVAL;     //validate error
       }
@@ -199,7 +199,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   }
   printk("45.5");  
   printk("message in write is: %s\n", *res->msg);  
-  *res -> msg_len = len;
+  res -> msg_len = len;
   printk("46");  
   return len;
 }
