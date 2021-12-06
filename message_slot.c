@@ -198,7 +198,7 @@ struct file_operations Fops ={
 
 // Initialize the module - Register the character device
 static int __init driver_init(void){
-  int rc = -1;
+  int i, rc = -1;
  
   // Register driver capabilities. Obtain major num
   rc = register_chrdev( MAJOR_NUM, DEVICE_RANGE_NAME, &Fops );
