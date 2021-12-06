@@ -210,7 +210,8 @@ static int __init driver_init(void){
                        DEVICE_FILE_NAME, MAJOR_NUM );
     return rc;  //needed? 
   }
-  memset(driver,0,256*sizeof(Msg_slot*));
+  driver = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
+  memset(driver,0,256*sizeof(Msg_slot));
   if(driver == NULL){
     printk("Problem in driver");
   }
