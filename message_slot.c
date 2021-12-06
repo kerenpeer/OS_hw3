@@ -20,7 +20,7 @@ MODULE_LICENSE("GPL");
 static Msg_slot* driver[256];
 
 //================== HELP FUNCTIONS ===========================
-int find_channel(Msg_slot* ms, int id, Channel* c){
+Channel* find_channel(Msg_slot* ms, int id){
   Channel* head;
   printk("We just entered find_channel. S'emek\n");
   printk("id in find_channel: %d\n",id);
@@ -30,16 +30,15 @@ int find_channel(Msg_slot* ms, int id, Channel* c){
     printk("head id is: %d", head->id);
     printk("2");  
     if(head -> id == id){
-      c = head;
-      printk("c id is: %d\n", c->id);
-      printk("c msg is: %s\n", c->msg);
-      return 0;
+      printk("c id is: %d\n", head->id);
+      printk("c msg is: %s\n", head->msg);
+      return head;
     }
     printk("3");  
     head = head -> next;
   }
   printk("4");  
-  return -1;
+  return NULL;
 }
 
 //---------------------------------------------------------------
@@ -92,9 +91,9 @@ static int device_release(struct inode* inode, struct file*  file){
 // a process which has already opened
 // the device file attempts to read from it
 static ssize_t device_read(struct file* file, char __user* buffer, size_t length, loff_t* offset){
-  int channel_id,minor, res, i, len;
+  int channel_id,minor, i, len;
   Msg_slot *ms;
-  Channel *c;
+  Channel *res;
   printk("20");  
   
   len = -1;
@@ -108,25 +107,25 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
     printk("24");  
     return -EINVAL;     //validate error
   }
-  c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-  printk("25");  
-  memset(c, 0, sizeof(Channel));
-  printk("26");  
-  if (c == NULL){
-    printk("27");  
-    return -EINVAL;
-  }
-  res = find_channel(ms, 4, c);     /////fixxxxxxxxxxxxx
+  //c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+  //printk("25");  
+  //memset(c, 0, sizeof(Channel));
+  //printk("26");  
+  //if (c == NULL){
+    //printk("27");  
+    //return -EINVAL;
+  //}
+  res = find_channel(ms, 4);     /////fixxxxxxxxxxxxx
   printk("28");  
-  if(res == -1){
+  if(res == NULL){
     printk("29");  
     return -EINVAL;
   }
-  printk("c id is %d\n", c -> id);
-  printk("message is %s\n", c -> msg);
+  printk("c id is %d\n", *res -> id);
+  printk("message is %s\n", *res -> msg);
   printk("30");  
   printk("32");  
-  len = c -> msg_len;
+  len = *res -> msg_len;
   printk("33");  
   if (len == -1 || len > length){
     printk("34");  
@@ -134,7 +133,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   }
   for(i = 0; i < len ; i++){
     printk("35");  
-    if(put_user((c -> msg)[i], &buffer[i]) != 0){
+    if(put_user((*res -> msg)[i], &buffer[i]) != 0){
       return -EINVAL;     //validate error
     }
   }
@@ -146,10 +145,11 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
 // a processs which has already opened
 // the device file attempts to write to it
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
-  int channel_id, minor, res, i, len;
+  int channel_id, minor, i, len;
   Msg_slot *ms;
   //char *msg;
-  Channel *c;
+  //Channel *c, *res;
+  Channel *res;
   
   printk("37");  
   channel_id = *(int*)(file -> private_data);
@@ -164,16 +164,16 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
     return -EINVAL;     //validate error
   }
   printk("40.2");  
-  c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-  memset(c, 0, sizeof(Channel));
-  printk("40.5");  
-  if (c == NULL){
-      printk("41");  
-      return -EINVAL;
-  }
+ // c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+  //memset(c, 0, sizeof(Channel));
+  //printk("40.5");  
+  //if (c == NULL){
+    //  printk("41");  
+     // return -EINVAL;
+  //}
   printk("41.1");  
-  res = find_channel(ms, 4, c); /////fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  if(res == -1){
+  res = find_channel(ms, 4); /////fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  if(res == NULL){
     printk("42");  
     return -EINVAL;
   }
@@ -183,23 +183,23 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
     return -EMSGSIZE;
   }
   len = 0;
-  c -> msg = (char*)kmalloc(length*sizeof(char),GFP_KERNEL);
-  if(c -> msg == NULL){
+  *res-> msg = (char*)kmalloc(length*sizeof(char),GFP_KERNEL);
+  if(*res -> msg == NULL){
     printk("43.1");  
     return -EINVAL;
   }
   printk("43.4");  
   for(i = 0; i < length ; i++){
     printk("44");  
-      if(get_user((c -> msg)[i], &buffer[i]) != 0){
+      if(get_user((*res -> msg)[i], &buffer[i]) != 0){
         printk("45");  
         return -EINVAL;     //validate error
       }
       len++;
   }
   printk("45.5");  
-  printk("message in write is: %s\n", c->msg);  
-  c -> msg_len = len;
+  printk("message in write is: %s\n", *res->msg);  
+  *res -> msg_len = len;
   printk("46");  
   return len;
 }
@@ -229,7 +229,7 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
       printk("di6\n");
       return -EINVAL;
     }
-    if(find_channel(driver[minor],ioctl_param,c) == -1){
+    if(find_channel(driver[minor],ioctl_param) == NULL){
       buildC(c, ioctl_param);
       printk("di7\n");
       file -> private_data = &ioctl_param;
