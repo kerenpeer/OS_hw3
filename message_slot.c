@@ -45,7 +45,7 @@ void buildC(Channel *c, unsigned long ioctl_param){
 //================== DEVICE FUNCTIONS ===========================
 static int device_open(struct inode* inode, struct file* file){
   int minor;
-  Msg_slot* ms;
+  Msg_slot ms;
 
   ms = (Msg_slot*)kmalloc(sizeof(Msg_slot),GFP_KERNEL);
   memset(ms, 0, sizeof(Msg_slot));
@@ -56,7 +56,7 @@ static int device_open(struct inode* inode, struct file* file){
   ms -> minor = minor;
   ms -> channels = NULL;
   
-  driver[minor] = *ms;
+  driver[minor] = ms;
   printk("msgslot is in: %d",driver[minor] ->minor);
   
   return SUCCESS;
@@ -79,7 +79,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   len = -1;
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
-  ms = driver[minor];
+  ms = *driver[minor];
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
@@ -119,7 +119,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
 
   channel_id = (int*)file -> private_data;
   minor = iminor(file->f_path.dentry->d_inode);
-  ms = driver[minor];
+  ms = *driver[minor];
   if(ms == NULL){
     return -EINVAL;     //validate error
   }
@@ -160,7 +160,7 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
     if(driver[minor] == NULL){
        return -EINVAL;
     }
-    msg_s = driver[minor];
+    msg_s = *driver[minor];
     c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
     memset(c, 0, sizeof(Channel));
     if (c == NULL){
