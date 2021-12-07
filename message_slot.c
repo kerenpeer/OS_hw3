@@ -324,7 +324,6 @@ static void __exit driver_cleanup(void){
       printk("driver is freed: %d",i);
     }
   }
-  kfree(driver);
   printk("driver is freed");
   unregister_chrdev(MAJOR_NUM, DEVICE_RANGE_NAME);
 }
