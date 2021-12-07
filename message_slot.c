@@ -227,15 +227,15 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
     }
    // msg_s = driver[minor];
     printk("di3\n");
-    c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-    printk("di4\n");
-    memset(c, 0, sizeof(Channel));
-    printk("di5\n");
-    if (c == NULL){
-      printk("di6\n");
-      return -EINVAL;
-    }
     if(find_channel(driver[minor],ioctl_param) == NULL){
+      c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
+      printk("di4\n");
+      memset(c, 0, sizeof(Channel));
+      printk("di5\n");
+      if (c == NULL){
+        printk("di6\n");
+        return -EINVAL;
+      }
       buildC(c, ioctl_param);
       printk("di7\n");
       file -> private_data = &ioctl_param;
