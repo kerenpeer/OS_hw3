@@ -311,17 +311,21 @@ static void __exit driver_cleanup(void){
   Channel *Clist, *tmp;
   for(i=0; i < 256; i++){
     if(driver[i] != NULL){
-       Clist = driver[i] -> channels;
-       while(Clist != NULL){
-         kfree(Clist -> msg);
-         tmp = Clist -> next;
-         kfree(Clist);
-         Clist = tmp;
-       }
-       kfree(&driver[i]);
+      printk("loop is: %d",i);
+      Clist = driver[i] -> channels;
+      while(Clist != NULL){
+        printk("CLIST ID IS: %d",Clist->id);
+        kfree(Clist -> msg);
+        tmp = Clist -> next;
+        kfree(Clist);
+        Clist = tmp;
+      }
+      kfree(driver[i]);
+      printk("driver is freed: %d",i);
     }
   }
   kfree(driver);
+  printk("driver is freed");
   unregister_chrdev(MAJOR_NUM, DEVICE_RANGE_NAME);
 }
 
