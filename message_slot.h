@@ -16,7 +16,6 @@
 // The major device number.
 #define MAJOR_NUM 240
 // Set the message of the device driver
-//#define MSG_SLOT_CHANNEL _IOW(MAJOR_NUM, 0, unsigned long)
 
 #define MSG_SLOT_CHANNEL 1
 #define DEVICE_RANGE_NAME "Keren's_dev"
