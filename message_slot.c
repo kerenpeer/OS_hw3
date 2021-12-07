@@ -149,7 +149,7 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
 static ssize_t device_write(struct file* file, const char __user* buffer, size_t length, loff_t* offset){
   int channel_id, minor, i, len;
   Msg_slot *ms;
-  //char *msg;
+  char *prevMsg;
   //Channel *c, *res;
   Channel *res;
   
@@ -185,6 +185,8 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
     return -EMSGSIZE;
   }
   len = 0;
+  prevMsg = res -> msg;
+  kfree(prevMsg);
   res-> msg = (char*)kmalloc(length*sizeof(char),GFP_KERNEL);
   if(res -> msg == NULL){
     printk("43.1");  
