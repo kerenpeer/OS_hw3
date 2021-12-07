@@ -117,7 +117,8 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
     //printk("27");  
     //return -EINVAL;
   //}
-  res = find_channel(ms, 4);     /////fixxxxxxxxxxxxx
+  //res = find_channel(ms, 4);     /////fixxxxxxxxxxxxx
+  res = find_channel(ms, channel_id);
   printk("28");  
   if(res == NULL){
     printk("29");  
@@ -174,7 +175,8 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
      // return -EINVAL;
   //}
   printk("41.1");  
-  res = find_channel(ms, 4); /////fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//  res = find_channel(ms, 4); /////fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  res = find_channel(ms, channel_id);
   if(res == NULL){
     printk("42");  
     return -EINVAL;
