@@ -100,7 +100,8 @@ static ssize_t device_read(struct file* file, char __user* buffer, size_t length
   printk("20");  
   
   len = -1;
-  channel_id = (unsigned long)(file -> private_data);
+  channel_id = (unsigned long)file -> private_data;
+  printk("channel id is %d\n", channel_id);
   printk("21");  
   minor = iminor(file->f_path.dentry->d_inode);
   printk("22");  
@@ -156,11 +157,10 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   int channel_id, minor, i, len;
   Msg_slot *ms;
   char *prevMsg;
-  //Channel *c, *res;
   Channel *res;
   
   printk("37");  
-  channel_id = (unsigned long) (file -> private_data);
+  channel_id = (unsigned long) file -> private_data;
   printk("channel id is: %d",channel_id);  
   printk("38");  
   minor = iminor(file->f_path.dentry->d_inode);
@@ -172,15 +172,7 @@ static ssize_t device_write(struct file* file, const char __user* buffer, size_t
   }
   ms = driver[minor];
   printk("40.2");  
- // c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
-  //memset(c, 0, sizeof(Channel));
-  //printk("40.5");  
-  //if (c == NULL){
-    //  printk("41");  
-     // return -EINVAL;
-  //}
   printk("41.1");  
-//  res = find_channel(ms, 4); /////fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   res = find_channel(ms, channel_id);
   if(res == NULL){
     printk("42");  
