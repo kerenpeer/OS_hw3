@@ -243,7 +243,7 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
       buildC(c, ioctl_param);
       printk("di7\n");
       file -> private_data = (void*) ioctl_param;
-      printk("new c id is %d",(unsigned long) (file -> private_data));
+      printk("new c id is %ld",(unsigned long) (file -> private_data));
       printk("di8\n");
       if(driver[minor] ->channels == NULL){
         printk("di9\n");
