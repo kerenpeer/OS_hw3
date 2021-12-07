@@ -223,6 +223,7 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
       return -EINVAL;    }
    // msg_s = driver[minor];
     printk("di3\n");
+    file -> private_data = (void*) ioctl_param;
     if(find_channel(driver[minor],ioctl_param) == NULL){
       c = (Channel*)kmalloc(sizeof(Channel),GFP_KERNEL);
       printk("di4\n");
@@ -234,7 +235,6 @@ static long device_ioctl(struct file* file, unsigned int ioctl_command_id, unsig
       }
       buildC(c, ioctl_param);
       printk("di7\n");
-      file -> private_data = (void*) ioctl_param;
       printk("new c id is %ld",(unsigned long) (file -> private_data));
       printk("di8\n");
       if(driver[minor] ->channels == NULL){
