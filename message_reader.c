@@ -41,8 +41,6 @@ int main(int argc, char *argv[]){
         exit(1);
     }
     if (write(1, message,ioctl_outcome) != ioctl_outcome) {
-        fprintf(stderr, write(1, message,ioctl_outcome));
-        fprintf(stderr, ioctl_outcome);
 		perror("Message was too big for buffer");
 		exit(1);
 	}
